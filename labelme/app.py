@@ -1313,6 +1313,7 @@ class MainWindow(QtWidgets.QMainWindow):
             shape_type = shape["shape_type"]
             flags = shape["flags"]
             description = shape.get("description", "")
+            character = shape.get("character", "")
             group_id = shape["group_id"]
             other_data = shape["other_data"]
 
@@ -1325,6 +1326,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 shape_type=shape_type,
                 group_id=group_id,
                 description=description,
+                character=character,
                 mask=shape["mask"],
             )
             for x, y in points:
@@ -1363,6 +1365,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     points=[(p.x(), p.y()) for p in s.points],
                     group_id=s.group_id,
                     description=s.description,
+                    character =s.character,
                     shape_type=s.shape_type,
                     flags=s.flags,
                     mask=None
@@ -1476,6 +1479,7 @@ class MainWindow(QtWidgets.QMainWindow):
             shape = self.canvas.setLastLabel(text, flags)
             shape.group_id = group_id
             shape.description = description
+            shape.character = character
             self.addLabel(shape)
             self.actions.editMode.setEnabled(True)
             self.actions.undoLastPoint.setEnabled(False)
