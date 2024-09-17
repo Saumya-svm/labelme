@@ -102,6 +102,12 @@ class LabelDialog(QtWidgets.QDialog):
         self.editDescription.setPlaceholderText("Label description")
         self.editDescription.setFixedHeight(50)
         layout.addWidget(self.editDescription)
+	
+        self.character = QtWidgets.QTextEdit()
+        self.character.setPlaceholderText("Characteristic")
+        self.character.setFixedHeight(50)
+        layout.addWidget(self.character)
+
         self.setLayout(layout)
         # completion
         completer = QtWidgets.QCompleter()
@@ -199,7 +205,7 @@ class LabelDialog(QtWidgets.QDialog):
             return int(group_id)
         return None
 
-    def popUp(self, text=None, move=True, flags=None, group_id=None, description=None):
+    def popUp(self, text=None, move=True, flags=None, group_id=None, description=None, character=None):
         if self._fit_to_content["row"]:
             self.labelList.setMinimumHeight(
                 self.labelList.sizeHintForRow(0) * self.labelList.count() + 2
@@ -213,6 +219,9 @@ class LabelDialog(QtWidgets.QDialog):
         if description is None:
             description = ""
         self.editDescription.setPlainText(description)
+        if character is None:
+            character = ""
+        self.character.setPlainText(character)
         if flags:
             self.setFlags(flags)
         else:
@@ -239,6 +248,7 @@ class LabelDialog(QtWidgets.QDialog):
                 self.getFlags(),
                 self.getGroupId(),
                 self.editDescription.toPlainText(),
+                self.character.toPlainText()
             )
         else:
             return None, None, None, None
