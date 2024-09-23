@@ -34,7 +34,7 @@ from labelme.widgets import ToolBar
 from labelme.widgets import UniqueLabelQListWidget
 from labelme.widgets import ZoomWidget
 
-from .. import utils
+import utils
 
 # FIXME
 # - [medium] Set max zoom value to something big enough for FitWidth/Window
@@ -1106,6 +1106,13 @@ class MainWindow(QtWidgets.QMainWindow):
             edit_flags = True
             edit_group_id = True
             edit_description = True
+            edit_character1 = True
+            edit_character2 = True
+            edit_character3 = True
+            edit_character4 = True
+            edit_character5 = True
+            edit_character6 = True
+            edit_character7 = True
         else:
             edit_text = all(item.shape().label == shape.label for item in items[1:])
             edit_flags = all(item.shape().flags == shape.flags for item in items[1:])
@@ -1114,6 +1121,27 @@ class MainWindow(QtWidgets.QMainWindow):
             )
             edit_description = all(
                 item.shape().description == shape.description for item in items[1:]
+            )
+            edit_character1 = all(
+                item.shape().character1 == shape.character1 for item in items[1:]
+            )
+            edit_character2 = all(
+                item.shape().character2 == shape.character2 for item in items[1:]
+            )
+            edit_character3 = all(
+                item.shape().character3 == shape.character3 for item in items[1:]
+            )
+            edit_character4 = all(
+                item.shape().character4 == shape.character4 for item in items[1:]
+            )
+            edit_character5 = all(
+                item.shape().character5 == shape.character5 for item in items[1:]
+            )
+            edit_character6 = all(
+                item.shape().character6 == shape.character6 for item in items[1:]
+            )
+            edit_character7 = all(
+                item.shape().character7 == shape.character7 for item in items[1:]
             )
 
         if not edit_text:
@@ -1126,12 +1154,27 @@ class MainWindow(QtWidgets.QMainWindow):
             self.labelDialog.edit_group_id.setDisabled(True)
         if not edit_description:
             self.labelDialog.editDescription.setDisabled(True)
+        if not edit_character1:
+            self.labelDialog.character1.setDisabled(True)
+        edit_var = [edit_character2, edit_character3, edit_character4, edit_character5, edit_character6, edit_character7]
+        var = [self.labelDialog.character2, self.labelDialog.character3, self.labelDialog.character4, self.labelDialog.character5, self.labelDialog.character6, self.labelDialog.character7]
+        for i in range(len(var)):
+            if not edit_var[i]:
+                var[i].setDisabled(True)
+        
 
-        text, flags, group_id, description = self.labelDialog.popUp(
+        text, flags, group_id, description, character1, character2, character3, character4, character5, character6, character7 = self.labelDialog.popUp(
             text=shape.label if edit_text else "",
             flags=shape.flags if edit_flags else None,
             group_id=shape.group_id if edit_group_id else None,
             description=shape.description if edit_description else None,
+            character1=shape.character1 if edit_character1 else None,
+            character2=shape.character2 if edit_character2 else None,
+            character3=shape.character3 if edit_character3 else None,
+            character4=shape.character4 if edit_character4 else None,
+            character5=shape.character5 if edit_character5 else None,
+            character6=shape.character6 if edit_character6 else None,
+            character7=shape.character7 if edit_character7 else None,
         )
 
         if not edit_text:
@@ -1144,11 +1187,26 @@ class MainWindow(QtWidgets.QMainWindow):
             self.labelDialog.edit_group_id.setDisabled(False)
         if not edit_description:
             self.labelDialog.editDescription.setDisabled(False)
+        if not edit_character1:
+            self.labelDialog.character1.setDisabled(False)
+
+        edit_var = [edit_character2, edit_character3, edit_character4, edit_character5, edit_character6, edit_character7]
+        var = [self.labelDialog.character2, self.labelDialog.character3, self.labelDialog.character4, self.labelDialog.character5, self.labelDialog.character6, self.labelDialog.character7]
+        for i in range(len(var)):
+            if not edit_var[i]:
+                var[i].setDisabled(False)
 
         if text is None:
             assert flags is None
             assert group_id is None
             assert description is None
+            assert character1 is None
+            assert character2 is None
+            assert character3 is None
+            assert character4 is None
+            assert character5 is None
+            assert character6 is None
+            assert character7 is None
             return
 
         self.canvas.storeShapes()
@@ -1159,9 +1217,16 @@ class MainWindow(QtWidgets.QMainWindow):
                 flags=flags if edit_flags else None,
                 group_id=group_id if edit_group_id else None,
                 description=description if edit_description else None,
+                character1=character1 if character1 else None,
+                character2=character2 if character2 else None,
+                character3=character3 if character3 else None,
+                character4=character4 if character4 else None,
+                character5=character5 if character5 else None,
+                character6=character6 if character6 else None,
+                character7=character7 if character7 else None,
             )
 
-    def _update_item(self, item, text, flags, group_id, description):
+    def _update_item(self, item, text, flags, group_id, description, character1, character2, character3, character4, character5, character6, character7):
         if not self.validateLabel(text):
             self.errorMessage(
                 self.tr("Invalid label"),
@@ -1181,7 +1246,15 @@ class MainWindow(QtWidgets.QMainWindow):
             shape.group_id = group_id
         if description is not None:
             shape.description = description
+        if character1 is not None:
+            shape.character1 = character1
 
+        edit_var = [character2, character3, character4, character5, character6, character7]
+        var = [shape.character2, shape.character3, shape.character4, shape.character5, shape.character6, shape.character7]
+        for i in range(len(var)):
+            if edit_var[i] is not None:
+                var[i] = edit_var[i]
+        
         self._update_shape_color(shape)
         if shape.group_id is None:
             item.setText(
@@ -1313,7 +1386,13 @@ class MainWindow(QtWidgets.QMainWindow):
             shape_type = shape["shape_type"]
             flags = shape["flags"]
             description = shape.get("description", "")
-            character = shape.get("character", "")
+            character1 = shape.get("character1", "")
+            character2 = shape.get("character2", "")
+            character3 = shape.get("character3", "")
+            character4 = shape.get("character4", "")
+            character5 = shape.get("character5", "")
+            character6 = shape.get("character6", "")
+            character7 = shape.get("character7", "")
             group_id = shape["group_id"]
             other_data = shape["other_data"]
 
@@ -1326,7 +1405,13 @@ class MainWindow(QtWidgets.QMainWindow):
                 shape_type=shape_type,
                 group_id=group_id,
                 description=description,
-                character=character,
+                character1=character1,
+                character3 = character3,
+                character2 = character2,
+                character4 = character4,
+                character5 = character5,
+                character6 = character6,
+                character7 = character7,
                 mask=shape["mask"],
             )
             for x, y in points:
@@ -1365,7 +1450,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     points=[(p.x(), p.y()) for p in s.points],
                     group_id=s.group_id,
                     description=s.description,
-                    character =s.character,
+                    character1 =s.character1,
                     shape_type=s.shape_type,
                     flags=s.flags,
                     mask=None
@@ -1460,9 +1545,10 @@ class MainWindow(QtWidgets.QMainWindow):
         flags = {}
         group_id = None
         description = ""
+        character1 = ''
         if self._config["display_label_popup"] or not text:
             previous_text = self.labelDialog.edit.text()
-            text, flags, group_id, description, character = self.labelDialog.popUp(text)
+            text, flags, group_id, description, character1 = self.labelDialog.popUp(text)
             if not text:
                 self.labelDialog.edit.setText(previous_text)
 
@@ -1479,7 +1565,7 @@ class MainWindow(QtWidgets.QMainWindow):
             shape = self.canvas.setLastLabel(text, flags)
             shape.group_id = group_id
             shape.description = description
-            shape.character = character
+            shape.character1 = character1
             self.addLabel(shape)
             self.actions.editMode.setEnabled(True)
             self.actions.undoLastPoint.setEnabled(False)
