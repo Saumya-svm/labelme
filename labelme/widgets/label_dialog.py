@@ -98,15 +98,78 @@ class LabelDialog(QtWidgets.QDialog):
         layout.addItem(self.flagsLayout)
         self.edit.textChanged.connect(self.updateFlags)
         # text edit
-        self.editDescription = QtWidgets.QTextEdit()
-        self.editDescription.setPlaceholderText("Label description")
-        self.editDescription.setFixedHeight(50)
+        # self.editDescription = QtWidgets.QTextEdit()
+        # self.editDescription.setPlaceholderText("Language Code")
+        # self.editDescription.setFixedHeight(50)
+        # layout.addWidget(self.editDescription)
+
+        self.editDescription = QtWidgets.QComboBox()
+        self.editDescription.addItem("Select an option")
+        self.editDescription.addItem("en")
+        self.editDescription.addItem("hi")
+        self.editDescription.addItem("bn")
         layout.addWidget(self.editDescription)
 	
-        self.character = QtWidgets.QTextEdit()
-        self.character.setPlaceholderText("Characteristic")
-        self.character.setFixedHeight(50)
-        layout.addWidget(self.character)
+        # self.character = QtWidgets.QTextEdit()
+        # self.character.setPlaceholderText("Characteristic")
+        # self.character.setFixedHeight(50)
+        # layout.addWidget(self.character)
+        self.character1 = QtWidgets.QComboBox()
+        self.character1.addItem("Select Line Orientation")
+        self.character1.addItem("Horizontal")
+        self.character1.addItem("Vertical")
+        self.character1.addItem("Multi Oriented")
+        self.character1.addItem("Not a line")
+        layout.addWidget(self.character1)
+        
+        self.character2 = QtWidgets.QComboBox()
+        self.character2.addItem("Select Curve Orientation")
+        self.character2.addItem("Horizontal Curve")
+        self.character2.addItem("Vertical Curve")
+        self.character2.addItem("Circular")
+        self.character2.addItem("Wavy")
+        layout.addWidget(self.character2)
+
+        self.character3 = QtWidgets.QComboBox()
+        self.character3.addItem("Select Occlusion")
+        self.character3.addItem("Occluded")
+        self.character3.addItem("Not occluded")
+        layout.addWidget(self.character3)
+
+        self.character4 = QtWidgets.QComboBox()
+        self.character4.addItem("Select Dimension")
+        self.character4.addItem("2d Text")
+        self.character4.addItem("3d Text")
+        layout.addWidget(self.character4)
+
+        self.character5 = QtWidgets.QComboBox()
+        self.character5.addItem("Select Point of View")
+        self.character5.addItem("Normal")
+        self.character5.addItem("Perspective")
+        self.character5.setCurrentIndex(1)  # Set "Normal" as the default value
+        layout.addWidget(self.character5)
+
+
+        self.character6 = QtWidgets.QComboBox()
+        self.character6.addItem("Select Lighting Condition")
+        self.character6.addItem("Naturally Lit")
+        self.character6.addItem("Poor Illumination")
+        self.character6.addItem("External Light Exposure")
+        layout.addWidget(self.character6)
+
+        self.character7 = QtWidgets.QComboBox()
+        self.character7.addItem("Select Background Type")
+        self.character7.addItem("Complex")
+        self.character7.addItem("Simple")
+        layout.addWidget(self.character7)
+
+        # well lit, poor illumination, light exposure
+        # horizontal, vertical, multioriented
+        # horizontal curved, vertical curved, circular curved, wavy curved
+        # non occluded, occluded
+        # 2d Text, 3d Text
+        # normal, perspective
+        # which are occlusion attribute, complex background attribute, distortion attribute, raised attribute, wordart attribute, and handwritten attribute.
 
         self.setLayout(layout)
         # completion
@@ -205,7 +268,7 @@ class LabelDialog(QtWidgets.QDialog):
             return int(group_id)
         return None
 
-    def popUp(self, text=None, move=True, flags=None, group_id=None, description=None, character=None):
+    def popUp(self, text=None, move=True, flags=None, group_id=None, description=None, character1=None, character2=None, character3=None, character4=None, character5=None, character6=None, character7=None):
         if self._fit_to_content["row"]:
             self.labelList.setMinimumHeight(
                 self.labelList.sizeHintForRow(0) * self.labelList.count() + 2
@@ -214,14 +277,34 @@ class LabelDialog(QtWidgets.QDialog):
             self.labelList.setMinimumWidth(self.labelList.sizeHintForColumn(0) + 2)
         # if text is None, the previous label in self.edit is kept
         if text is None:
-            text = self.edit.text()
+            text = self.edit.text() or 'No Text'
         # description is always initialized by empty text c.f., self.edit.text
         if description is None:
             description = ""
-        self.editDescription.setPlainText(description)
-        if character is None:
-            character = ""
-        self.character.setPlainText(character)
+        print(description, "description")
+        try:
+            self.editDescription.setEditText(description)
+        except:
+            self.editDescription.setEditText(description[0][0])
+        # self.editDescription.setPlainText(description)
+        var = [character2, character3, character4, character5, character6, character7]
+        selfvar = [self.character2, self.character3, self.character4, self.character5, self.character6, self.character7]
+        for i, j in zip(var, selfvar):
+            if i is None:
+                i = ""
+            try:
+                j.setEditText(i)
+            except:
+                j.setEditText(i[0])
+            
+        selfvar = [self.character2, self.character3, self.character4, self.character5, self.character6, self.character7]
+        if character1 is None:
+            character1 = ""
+        try:
+            self.character1.setEditText(character1)
+        except:
+            self.character1.setEditText(character1[0])
+        # self.character.setPlainText(character)
         if flags:
             self.setFlags(flags)
         else:
@@ -247,8 +330,10 @@ class LabelDialog(QtWidgets.QDialog):
                 self.edit.text(),
                 self.getFlags(),
                 self.getGroupId(),
-                self.editDescription.toPlainText(),
-                self.character.toPlainText()
+                # self.editDescription.toPlainText(),
+                self.editDescription.currentText(),
+                # self.character.toPlainText()
+                self.character1.currentText(),*[i.currentText() for i in selfvar]
             )
         else:
-            return None, None, None, None
+            return None, None, None, None, None, None, None, None, None, None, None

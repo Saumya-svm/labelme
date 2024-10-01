@@ -109,7 +109,14 @@ class LabelFile(object):
                     points=s["points"],
                     shape_type=s.get("shape_type", "polygon"),
                     flags=s.get("flags", {}),
-                    description=s.get("description"),
+                    description=s.get("description")[0][0],
+                    character1=s.get("character1")[0][0],
+                    character2=s.get("character2")[0][0],
+                    character3=s.get("character3")[0][0],
+                    character4=s.get("character4")[0][0],
+                    character5=s.get("character5")[0][0],
+                    character6=s.get("character6")[0][0],
+                    character7=s.get("character7")[0][0],
                     group_id=s.get("group_id"),
                     mask=utils.img_b64_to_arr(s["mask"]).astype(bool)
                     if s.get("mask")
@@ -133,6 +140,7 @@ class LabelFile(object):
         self.imageData = imageData
         self.filename = filename
         self.otherData = otherData
+        print(shapes)
 
     @staticmethod
     def _check_image_height_and_width(imageData, imageHeight, imageWidth):

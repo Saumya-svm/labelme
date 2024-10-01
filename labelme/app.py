@@ -1451,6 +1451,12 @@ class MainWindow(QtWidgets.QMainWindow):
                     group_id=s.group_id,
                     description=s.description,
                     character1 =s.character1,
+                    character2 =s.character2,
+                    character3 =s.character3,
+                    character4 =s.character4,
+                    character5 =s.character5,
+                    character6 =s.character6,
+                    character7 =s.character7,
                     shape_type=s.shape_type,
                     flags=s.flags,
                     mask=None
@@ -1546,9 +1552,15 @@ class MainWindow(QtWidgets.QMainWindow):
         group_id = None
         description = ""
         character1 = ''
+        character2 = ''
+        character3 = ''
+        character4 = ''
+        character5 = ''
+        character6 = ''
+        character7 = ''
         if self._config["display_label_popup"] or not text:
             previous_text = self.labelDialog.edit.text()
-            text, flags, group_id, description, character1 = self.labelDialog.popUp(text)
+            text, flags, group_id, description, character1, character2,character3,character4,character5,character6,character7 = self.labelDialog.popUp(text)
             if not text:
                 self.labelDialog.edit.setText(previous_text)
 
@@ -1566,6 +1578,7 @@ class MainWindow(QtWidgets.QMainWindow):
             shape.group_id = group_id
             shape.description = description
             shape.character1 = character1
+            shape.character2 ,shape.character3 ,shape.character4 ,shape.character5 ,shape.character6 ,shape.character7 = character2, character3, character4, character5, character6, character7
             self.addLabel(shape)
             self.actions.editMode.setEnabled(True)
             self.actions.undoLastPoint.setEnabled(False)
